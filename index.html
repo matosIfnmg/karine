@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Um pedido especial...</title>
     <style>
         * {
@@ -10,6 +10,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
         }
 
         body {
@@ -20,41 +21,42 @@
             align-items: center;
             overflow: hidden;
             text-align: center;
+            touch-action: manipulation;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.85);
-            padding: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px 20px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
             width: 90%;
+            max-width: 350px;
             position: relative;
         }
 
         h1 {
             color: #d63384;
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            line-height: 1.4;
+            font-size: 1.6rem;
+            margin-bottom: 35px;
+            line-height: 1.3;
         }
 
         .buttons {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            align-items: center;
+            gap: 25px;
             position: relative;
-            min-height: 60px;
+            height: 60px;
         }
 
         button {
-            padding: 12px 30px;
-            font-size: 1rem;
+            padding: 12px 28px;
+            font-size: 1.1rem;
             font-weight: bold;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s ease;
         }
 
         #btnSim {
@@ -64,26 +66,20 @@
             z-index: 10;
         }
 
-        #btnSim:hover {
-            transform: scale(1.1);
-            background-color: #218838;
-        }
-
         #btnNao {
             background-color: #dc3545;
             color: white;
             box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
             position: absolute;
-            transition: all 0.15s ease-out;
+            transition: all 0.1s ease-out;
         }
 
-        /* Estilo da mensagem de sucesso */
         .success-message {
             display: none;
             color: #d63384;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: bold;
-            margin-top: 20px;
+            line-height: 1.4;
             animation: fadeIn 0.5s ease-in-out;
         }
 
@@ -104,25 +100,26 @@
         </div>
 
         <div id="mensagemSucesso" class="success-message">
-            Oba! Te amo! 🥰💖
+            Ótimo, quinta as 19hrs no Texas! 🥰🍻
         </div>
     </div>
 
     <script>
         const btnNao = document.getElementById('btnNao');
-        const btnSim = document.getElementById('btnSim');
         const pergunta = document.getElementById('pergunta');
         const mensagemSucesso = document.getElementById('mensagemSucesso');
         const areaBotoes = document.getElementById('areaBotoes');
 
-        // Função para mover o botão "Não" para uma posição aleatória na tela
-        function foge() {
+        // Função para mover o botão "Não" para longe do toque/mouse
+        function foge(e) {
+            if (e) e.preventDefault(); // Evita cliques fantasmas no mobile
+
             const larguraJanela = window.innerWidth;
             const alturaJanela = window.innerHeight;
 
-            // Gera novas coordenadas aleatórias respeitando as bordas da tela
-            const maxX = larguraJanela - btnNao.offsetWidth - 50;
-            const maxY = alturaJanela - btnNao.offsetHeight - 50;
+            // Limites para o botão não sumir da tela
+            const maxX = larguraJanela - btnNao.offsetWidth - 40;
+            const maxY = alturaJanela - btnNao.offsetHeight - 40;
 
             const aleatorioX = Math.max(20, Math.floor(Math.random() * maxX));
             const aleatorioY = Math.max(20, Math.floor(Math.random() * maxY));
@@ -132,16 +129,11 @@
             btnNao.style.top = `${aleatorioY}px`;
         }
 
-        // Para computadores (mouse)
+        // Eventos para abranger tanto toque quanto mouse
+        btnNao.addEventListener('touchstart', foge);
         btnNao.addEventListener('mouseover', foge);
-        
-        // Para celulares/tablets (toque na tela)
-        btnNao.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Impede o clique direto
-            foge();
-        });
+        btnNao.addEventListener('click', foge);
 
-        // O que acontece quando ela clica no "Sim"
         function aceitou() {
             pergunta.style.display = 'none';
             areaBotoes.style.display = 'none';
